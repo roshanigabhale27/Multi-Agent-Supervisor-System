@@ -1,0 +1,285 @@
+{
+  "name": "Multi-Agent Supervisor System",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -528,
+        -64
+      ],
+      "id": "60ae2883-8793-4502-9c4b-3d017bdfdb9d",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -384,
+        64
+      ],
+      "id": "831c59c0-5daa-4a1b-9328-55b0d929faf8",
+      "name": "When chat message received",
+      "webhookId": "4864aef8-2171-4f7a-86aa-e041a82871de"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "You arYou are a Supervisor Agent.\n\nYour job is to analyze the user's request and break it into smaller tasks.\n\nCreate:\n1. Research Task\n2. Writing Task\n3. Verification Task\n\nReturn output in this format:\n\nResearch Task:\n...\n\nWriting Task:\n...\n\nVerification Task:\n...e a helpful assistant",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -208,
+        -64
+      ],
+      "id": "b8c758af-c9e2-4ab5-9533-f07c296cb105",
+      "name": "Supervisor Agent"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -192,
+        144
+      ],
+      "id": "5260f207-f840-4c68-ab9f-8e652231ba54",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "RXqGfEme1StPI1ob",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "You are a Research Agent.\n\nYour job is to gather information related to the assigned topic.\n\nReturn:\n- Key facts\n- Important benefits\n- Challenges\n- Real-world examples\n\nUse bullet points.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        112,
+        -64
+      ],
+      "id": "6f55c4f4-b927-4f7b-a433-2953d345cdc0",
+      "name": "Research Agent"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        112,
+        144
+      ],
+      "id": "3771dc56-b69c-4a6b-b287-efc134ac60fd",
+      "name": "OpenRouter Chat Model1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "RXqGfEme1StPI1ob",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "You are a Professional Report Writer.\n\nYour task is to convert the research information provided into a complete, well-structured report.\n\nInstructions:\n- Create a clear title.\n- Write a brief introduction.\n- Organize the content into sections with headings.\n- Use bullet points where appropriate.\n- Include benefits, challenges, and examples if available.\n- Write a conclusion.\n- Use professional and easy-to-understand language.\n\nIMPORTANT:\n- Do not ask questions.\n- Do not request additional information.\n- Do not explain your process.\n- Directly generate the complete report based on the provided research.\n- Return only the final report.\n\nOutput Format:\n\nTitle\n\nIntroduction\n\nKey Findings\n\nBenefits\n\nChallenges\n\nExamples\n\nConclusion",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        464,
+        -64
+      ],
+      "id": "6429a30a-1914-4992-9377-ffc18368f196",
+      "name": "Writer Agent"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        448,
+        160
+      ],
+      "id": "1406f14a-3a16-4fba-988d-c410348398ad",
+      "name": "OpenRouter Chat Model2",
+      "credentials": {
+        "openRouterApi": {
+          "id": "RXqGfEme1StPI1ob",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "You are a Verification Agent.\n\nYou will receive a complete report from a previous agent.\n\nReview it for:\n- Accuracy\n- Grammar\n- Clarity\n- Completeness\n\nIMPORTANT:\n- Never ask the user to provide the report.\n- Never say \"paste the report\".\n- Never request additional information.\n- Always assume the report is provided below.\n- Return the complete corrected report.\n\nREPORT:\n\n{{input}}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        800,
+        -64
+      ],
+      "id": "50e8c779-adc6-4787-a37f-ff1fe00e1e6d",
+      "name": "Verifier Agent"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        800,
+        160
+      ],
+      "id": "35cd1d7d-aaff-4fdb-9542-84763dc00359",
+      "name": "OpenRouter Chat Model3",
+      "credentials": {
+        "openRouterApi": {
+          "id": "RXqGfEme1StPI1ob",
+          "name": "OpenRouter account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Supervisor Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Supervisor Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Supervisor Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supervisor Agent": {
+      "main": [
+        [
+          {
+            "node": "Research Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Research Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research Agent": {
+      "main": [
+        [
+          {
+            "node": "Writer Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Writer Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Writer Agent": {
+      "main": [
+        [
+          {
+            "node": "Verifier Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Verifier Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "53a8caae-49aa-4080-824c-1bc761703f3c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "94156d8b8d67ec35be94c285968306e4dba58ac9b2d0b24e884095f901350c56"
+  },
+  "nodeGroups": [],
+  "id": "diAvPWyquZR0tIJe",
+  "tags": []
+}
